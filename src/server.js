@@ -5,6 +5,10 @@ const cheerio = require('cheerio');
 const querystring = require('querystring');
 const mongoose = require('mongoose');
 const moment = require('moment');
+const express = require('express');
+const path = require('path');
+const app = express();
+
 require('./mongoose-setup');
 
 const Event = require('./model/event');
@@ -44,6 +48,11 @@ const URL_CONFIGURATIONS = [{
 
 function getEventInfo(url, localCategory) {
     request(baseUrl + url, function (error, response, html) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+
         const $ = cheerio.load(html);
 
         const title = $('.contest-page-main-banner').find('.title').text();
@@ -72,8 +81,17 @@ function getEventInfo(url, localCategory) {
                 category: localCategory
             };
 
-            const eventObject = new Event(event);
-            eventObject.save();
+            Event.findOne(event).exec(function (error, foundEvent) {
+                if (error) {
+                    console.log(error);
+                    return;
+                }
+
+                if (!foundEvent) {
+                    const eventObject = new Event(event);
+                    eventObject.save();
+                }
+            });
         });
     });
 }
@@ -134,19 +152,38 @@ db.on('error', function (error) {
 db.once('open', function () {
     console.log('open');
 
-    URL_CONFIGURATIONS.forEach(function (urlConfig) {
-        request(baseUrl + urlConfig.url, function (error, response, html) {
-            if (!error && response.statusCode == 200) {
-                const $ = cheerio.load(html);
+    app.use(express.static(path.join(__dirname, 'public')));
 
-                $('#eventsContainter').find('a.article-content-container').each(function (i, element) {
-                    const link = $(element).attr('href');
+    app.get('/', function (req, res) {
+        res.sendFile(path.join(__dirname + '/index.html'));
+    });
 
-                    getEventInfo(link, urlConfig.localCategory);
-                });
-            }
+    app.get('/api/events', function (req, res) {
+        Event.find({}).exec().then(function (events) {
+            res.json(events);
         });
+    });
 
-        getPageData(0, urlConfig.categoryId, urlConfig.localCategory);
+    app.get('/api/scrape', function (req, res) {
+        URL_CONFIGURATIONS.forEach(function (urlConfig) {
+            request(baseUrl + urlConfig.url, function (error, response, html) {
+                if (!error && response.statusCode == 200) {
+                    const $ = cheerio.load(html);
+
+                    $('#eventsContainter').find('a.article-content-container').each(function (i, element) {
+                        const link = $(element).attr('href');
+
+                        getEventInfo(link, urlConfig.localCategory);
+                    });
+                }
+            });
+
+            getPageData(0, urlConfig.categoryId, urlConfig.localCategory);
+        });
+        res.send('began scraping');
+    });
+
+    app.listen(3000, function () {
+        console.log('Example app listening on port 3000!')
     });
 });
