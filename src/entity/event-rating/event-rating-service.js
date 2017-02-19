@@ -1,20 +1,25 @@
 const EventRatingRepository = require('./event-rating-repository');
 
-const EventRatingService = {
-    save: function (eventRating) {
-        return EventRatingRepository.save(eventRating);
-    },
-    findByEvent: function (eventId) {
+class EventRatingService {
+    save(rating, eventId, userId) {
+        return EventRatingRepository.save(rating, eventId, userId);
+    }
+
+    findByEvent(eventId) {
         return EventRatingRepository.findByEvent(eventId);
-    },
-    findAverageRating: function (ratings) {
-        var averageRating = 0;
-        ratings.forEach(function (rating) {
-            averageRating += rating.rating / ratings.length;
-        });
+    }
+
+    findByEventAndUser(eventId, userId) {
+        return EventRatingRepository.findByEventAndUser(eventId, userId);
+    }
+
+    findAverageRating(ratings) {
+        const averageRating = ratings.reduce((result, rating) => {
+            return result + rating.rating / ratings.length;
+        }, 0);
 
         return averageRating.toFixed(2);
     }
-};
+}
 
-module.exports = EventRatingService;
+module.exports = new EventRatingService();

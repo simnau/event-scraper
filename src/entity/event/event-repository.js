@@ -1,21 +1,25 @@
 const Event = require('./event');
 
-const EventRepository = {
-    find: function (query) {
+class EventRepository {
+    find(query) {
         return Event.find(query).exec();
-    },
-    findAll: function () {
+    }
+
+    findAll() {
         return Event.find({}).exec();
-    },
-    findOne: function (query) {
+    }
+
+    findOne(query) {
         return Event.findOne(query).exec();
-    },
-    findById: function (id) {
+    }
+
+    findById(id) {
         return Event.findById(id).exec();
-    },
-    save: function (event) {
+    }
+
+    save(event) {
         return new Event(event).save();
     }
-};
+}
 
-module.exports = EventRepository;
+module.exports = new EventRepository();

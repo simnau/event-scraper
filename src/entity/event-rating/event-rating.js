@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const eventRatingSchema = {
+const eventRatingSchema = new Schema({
     rating: Number,
-    eventId: String
-};
+    eventId: Schema.Types.ObjectId,
+    userId: Schema.Types.ObjectId,
+});
 
 const EventRating = mongoose.model('EventRating', eventRatingSchema);
 

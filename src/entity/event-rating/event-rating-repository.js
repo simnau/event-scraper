@@ -1,12 +1,18 @@
+const mongoose = require('mongoose');
 const EventRating = require('./event-rating');
 
-const EventRatingRepository = {
-    save: function (eventRating) {
-        return new EventRating(eventRating).save();
-    },
-    findByEvent: function (eventId) {
-        return EventRating.find({ eventId: eventId }).exec();
+class EventRatingRepository {
+    save(rating, eventId, userId) {
+        return new EventRating({ rating, eventId, userId }).save();
     }
-};
 
-module.exports = EventRatingRepository;
+    findByEvent(eventId) {
+        return EventRating.find({ eventId }).exec();
+    }
+
+    findByEventAndUser(eventId, userId) {
+        return EventRating.findOne({ eventId, userId }).exec();
+    }
+}
+
+module.exports = new EventRatingRepository();
