@@ -1,5 +1,8 @@
 const cheerio = require('cheerio');
 const rp = require('request-promise');
+const moment = require('moment');
+const querystring = require('querystring');
+
 const EventService = require('../entity/event/event-service');
 
 const constants = require('./scraper-constants');
@@ -9,7 +12,7 @@ const NEXT_PAGE_URL = constants.NEXT_PAGE_URL;
 
 function getEventInfo(url, localCategory) {
     const options = {
-        uri: BASE_URL + url
+        uri: encodeURI(BASE_URL + url),
     };
 
     rp(options)
@@ -73,7 +76,7 @@ function getPageData(pageId, categoryId, localCategory) {
     const contentLength = data.length;
 
     const options = {
-        uri: BASE_URL + NEXT_PAGE_URL,
+        uri: encodeURI(BASE_URL + NEXT_PAGE_URL),
         headers: {
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate',
@@ -99,9 +102,11 @@ function getPageData(pageId, categoryId, localCategory) {
 
             if (more[0]) {
                 getPageData(pageId + 1, categoryId, localCategory);
+            } else {
+                console.log('Finished Scraping');
             }
         })
-        .catch(function (error) {
+        .catch((error) => {
 
         });
 }
@@ -109,17 +114,20 @@ function getPageData(pageId, categoryId, localCategory) {
 const ScraperService = {
     scrape: function () {
         URL_CONFIGURATIONS.forEach(function (urlConfig) {
-            request(BASE_URL + urlConfig.url, function (error, response, html) {
-                if (!error && response.statusCode == 200) {
-                    const $ = cheerio.load(html);
+            const options = {
+                uri: encodeURI(BASE_URL + urlConfig.url),
+            };
+            rp(options)
+                .then((response) => {
+                    const $ = cheerio.load(response);
 
                     $('#eventsContainter').find('a.article-content-container').each(function (i, element) {
                         const link = $(element).attr('href');
 
                         getEventInfo(link, urlConfig.localCategory);
                     });
-                }
-            });
+                })
+                .catch(() => {});
 
             getPageData(0, urlConfig.categoryId, urlConfig.localCategory);
         });
