@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const MONGO_URL = 'mongodb://localhost:27017/scraper';
+const MONGO_URL = 'mongodb://varlius:S123N789@ds029725.mlab.com:29725/heroku_tr5r6fp1';
 
 mongoose.connect(MONGO_URL);
 
