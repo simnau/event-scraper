@@ -12,6 +12,12 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/category/:categoryId', (req, res) => {
+    EventService.findByCategory(req.params.categoryId).then((events) => {
+        res.json(events);
+    });
+});
+
 router.get('/:eventId', (req, res) => {
     EventService.findById(req.params.eventId).then((event) => {
         res.json(event);

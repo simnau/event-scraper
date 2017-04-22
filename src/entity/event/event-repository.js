@@ -20,6 +20,10 @@ class EventRepository {
     save(event) {
         return new Event(event).save();
     }
+
+    findByCategory(categoryId) {
+        return Event.find({ category: categoryId }).exec();
+    }
 }
 
 module.exports = new EventRepository();

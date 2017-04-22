@@ -20,6 +20,10 @@ class EventService {
     save(event) {
         return EventRepository.save(event);
     }
+
+    findByCategory(categoryId) {
+        return EventRepository.findByCategory(categoryId);
+    }
 }
 
 module.exports = new EventService();
