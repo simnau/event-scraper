@@ -7,6 +7,8 @@ const { requireAuth } = require('../../security/passport-strategies');
 const router = express.Router();
 
 router.get('/', (req, res) => {
+    console.log('get all events');
+
     EventService.findAll().then((events) => {
         res.json(events);
     });
