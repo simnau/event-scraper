@@ -19,14 +19,16 @@ router.post('/signup', (req, res, next) => {
         return res.status(422).send({ error: 'You must provide an email and a password' });
     }
 
-    UserService.findOne(email)
+    const lowercaseEmail = email.toLowerCase();
+
+    UserService.findOne(lowercaseEmail)
         .then((existingUser) => {
             if (existingUser) {
                 return res.status(422).send({ error: 'Email is in use' });
             }
 
             const user = {
-                email,
+                email: lowercaseEmail,
                 password,
             };
 

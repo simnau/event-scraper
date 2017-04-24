@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const environment = require('../environment');
 
-const MONGO_URL = 'mongodb://varlius:S123N789@ds029725.mlab.com:29725/heroku_tr5r6fp1';
+const mongoUrl = process.env.MONGO_URL || environment.mongoUrl;
 
-mongoose.connect(MONGO_URL);
+mongoose.connect(mongoUrl);
 
 const db = mongoose.connection;
 

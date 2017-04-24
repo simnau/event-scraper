@@ -7,7 +7,9 @@ const LocalStrategy = require('passport-local');
 // Create local strategy
 const localOptions = { usernameField: 'email' };
 const localLogin = new LocalStrategy(localOptions, function (email, password, done) {
-    UserService.findOne(email)
+    const lowercaseEmail = email.toLowerCase();
+
+    UserService.findOne(lowercaseEmail)
         .then(user => {
             if (!user) {
                 return done(null, false);
