@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const environment = require('../environment');
 
-const MONGO_URL = 'mongodb://localhost:27017/scraper';
+const mongoUrl = process.env.MONGO_URL || environment.mongoUrl;
 
-mongoose.connect(MONGO_URL);
+mongoose.connect(mongoUrl);
 
 const db = mongoose.connection;
 

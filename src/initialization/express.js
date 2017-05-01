@@ -11,16 +11,10 @@ const authentication = require('../security/authentication-resource');
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'));
-});
-
 app.use('/api/event', event);
 app.use('/api/scrape', scraper);
 app.use('/api', authentication);
 
-app.listen(8080, function () {
-    console.log('Listening on port 8080!')
+app.listen(process.env.PORT || 8080, function () {
+    console.log('Listening on port ' + (process.env.PORT || 8080) + "!");
 });
