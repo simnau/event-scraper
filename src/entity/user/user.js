@@ -8,6 +8,13 @@ const userSchema = new Schema({
     password: String
 });
 
+userSchema.method('toJSON', function() {
+    const user = this.toObject();
+    delete user.password;
+    delete user.__v;
+    return user;
+});
+
 // On Save Hook, encrypt password
 userSchema.pre('save', function (next) {
     const user = this;

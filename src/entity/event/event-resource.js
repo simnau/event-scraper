@@ -7,8 +7,6 @@ const { requireAuth } = require('../../security/passport-strategies');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    console.log('get all events');
-
     EventService.findAll().then((events) => {
         res.json(events);
     });
@@ -21,9 +19,10 @@ router.get('/category/:categoryId', (req, res) => {
 });
 
 router.get('/:eventId', (req, res) => {
-    EventService.findById(req.params.eventId).then((event) => {
-        res.json(event);
-    });
+    EventService.findById(req.params.eventId)
+        .then((event) => {
+            res.json(event);
+        });
 });
 
 router.post('/rating/:eventId', requireAuth, (req, res) => {
