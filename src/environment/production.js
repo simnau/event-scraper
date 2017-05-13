@@ -1,3 +1,3 @@
 module.exports = {
-    mongoUrl: 'mongodb://localhost:27017/scraper',
+    mongoUrl: 'mongodb://35.157.77.192:27017/scraper',
 };
