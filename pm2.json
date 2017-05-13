@@ -1,0 +1,11 @@
+{
+  "apps": [{
+    "name": "apiserver",
+    "script": "npm",
+    "args": "run prod",
+    "watch": true,
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }]
+}
